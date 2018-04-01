@@ -45,7 +45,7 @@ public class MeatBlock extends MeatObject {
 		this.methods.put("=", (arguments, context) -> {
 			MeatObject other = context.respondTo("at:",
 					new MeatList(new MeatObject[] { new MeatNumber(new BigDecimal(1)) }), context);
-			return new MeatBoolean(this.value() == other.value());
+			return new MeatBoolean(this.equals(other));
 		});
 	}
 

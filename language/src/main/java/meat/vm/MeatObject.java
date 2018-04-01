@@ -42,12 +42,4 @@ public class MeatObject implements TruffleObject {
 		return null;
 	}
 
-	@Override
-	public String toString() {
-		if (this.value() == this) {
-			return super.toString();
-		}
-		return this.value().toString();
-	}
-
 }

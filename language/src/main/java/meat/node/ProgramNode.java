@@ -1,6 +1,6 @@
 package meat.node;
 
-import java.util.Optional;
+import java.util.HashMap;
 import java.util.stream.Stream;
 
 import com.oracle.truffle.api.frame.FrameDescriptor;
@@ -33,7 +33,7 @@ public class ProgramNode extends RootNode {
 
 	@Override
 	public MeatObject execute(VirtualFrame frame) {
-		MeatContext context = new MeatContext(Optional.empty(), false);
+		MeatContext context = new MeatContext(new HashMap<>());
 		return Stream.of(this.statements).sequential().map(s -> s.execute(context)).reduce((a, b) -> b).get();
 	}
 

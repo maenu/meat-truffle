@@ -6,9 +6,4 @@ public class MeatString extends MeatLiteralObject<String> {
 		super(value);
 	}
 
-	@Override
-	public String toString() {
-		return String.format("'%s'", super.toString());
-	}
-
 }

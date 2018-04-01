@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.graalvm.collections.Pair;
 import org.parboiled.BaseParser;
 import org.parboiled.Parboiled;
 import org.parboiled.Rule;
@@ -22,6 +23,7 @@ import com.oracle.truffle.api.source.SourceSection;
 
 import meat.node.BlockNode;
 import meat.node.BooleanNode;
+import meat.node.DictionaryNode;
 import meat.node.ListNode;
 import meat.node.MeatNode;
 import meat.node.MessageSendNode;
@@ -128,8 +130,8 @@ public class Parser extends BaseParser<Object> {
 	}
 
 	Rule Literal() {
-		return FirstOf(BooleanLiteral(), NumberLiteral(), VariableLiteral(), BlockLiteral(), StringLiteral(),
-				ListLiteral());
+		return FirstOf(BooleanLiteral(), NumberLiteral(), VariableLiteral(), StringLiteral(), BlockLiteral(),
+				DictionaryLiteral(), ListLiteral());
 	}
 
 	Rule BooleanLiteral() {
@@ -187,6 +189,24 @@ public class Parser extends BaseParser<Object> {
 
 	boolean newListLiteral(List<MeatNode> statements) {
 		return push(1, new ListNode(newSourceSection(), statements.toArray(new MeatNode[0])));
+	}
+
+	Rule DictionaryLiteral() {
+		Var<List<Pair<MeatNode, MeatNode>>> entries = new Var<>(new ArrayList<>());
+		return Sequence('<', push(((Integer) peek()) + 1), Optional(Sequence('\n',
+				OneOrMore(Sequence(DictionaryLiteralEntry(), entries.get().add((Pair<MeatNode, MeatNode>) pop(1)))))),
+				drop(), CheckIndentation(), '>', ACTION(newDictionaryLiteral(entries.get())));
+	}
+
+	boolean newDictionaryLiteral(List<Pair<MeatNode, MeatNode>> entries) {
+		return push(1, new DictionaryNode(newSourceSection(), entries.toArray(new Pair[0])));
+	}
+
+	Rule DictionaryLiteralEntry() {
+		Var<MeatNode> key = new Var<>();
+		Var<MeatNode> value = new Var<>();
+		return Sequence(Statement(), key.set((MeatNode) pop(1)), push(((Integer) peek()) + 1), Statement(),
+				value.set((MeatNode) pop(1)), drop(), push(1, Pair.create(key.get(), value.get())));
 	}
 
 	Rule VariableLiteral() {
