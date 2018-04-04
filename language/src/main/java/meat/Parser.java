@@ -45,7 +45,7 @@ public class Parser extends BaseParser<Object> {
 		} catch (IOException exception) {
 			throw new RuntimeException("Could not read source", exception);
 		}
-		Parser parser = Parboiled.createParser(Parser.class, source);
+		Parser parser = Parboiled.createParser(Parser.class, language, source);
 		ParsingResult<Object> result = new ReportingParseRunner<>(parser.Program()).run(s);
 		if (!result.parseErrors.isEmpty()) {
 			throw new RuntimeException(ErrorUtils.printParseError(result.parseErrors.get(0)));
@@ -56,10 +56,12 @@ public class Parser extends BaseParser<Object> {
 				statements.toArray(new MeatNode[0]));
 	}
 
+	private Language language;
 	private Source source;
 
-	public Parser(Source source) {
+	public Parser(Language language, Source source) {
 		super();
+		this.language = language;
 		this.source = source;
 	}
 
@@ -85,7 +87,8 @@ public class Parser extends BaseParser<Object> {
 	}
 
 	boolean newMessageSend(MeatNode receiver, String selector, List<MeatNode> arguments) {
-		return push(1, new MessageSendNode(newSourceSection(), receiver, selector, arguments.toArray(new MeatNode[0])));
+		return push(1, new MessageSendNode(language, null, newSourceSection(), receiver, selector,
+				arguments.toArray(new MeatNode[0])));
 	}
 
 	Rule Expression() {
@@ -141,7 +144,7 @@ public class Parser extends BaseParser<Object> {
 	}
 
 	boolean newBooleanLiteral(boolean value) {
-		return push(1, new BooleanNode(newSourceSection(), value));
+		return push(1, new BooleanNode(language, null, newSourceSection(), value));
 	}
 
 	Rule StringLiteral() {
@@ -149,7 +152,7 @@ public class Parser extends BaseParser<Object> {
 	}
 
 	boolean newStringLiteral(String value) {
-		return push(1, new StringNode(newSourceSection(), value));
+		return push(1, new StringNode(language, null, newSourceSection(), value));
 	}
 
 	Rule StringSingleLine() {
@@ -177,7 +180,7 @@ public class Parser extends BaseParser<Object> {
 	}
 
 	boolean newNumberLiteral(BigDecimal value) {
-		return push(1, new NumberNode(newSourceSection(), value));
+		return push(1, new NumberNode(language, null, newSourceSection(), value));
 	}
 
 	Rule ListLiteral() {
@@ -188,7 +191,7 @@ public class Parser extends BaseParser<Object> {
 	}
 
 	boolean newListLiteral(List<MeatNode> statements) {
-		return push(1, new ListNode(newSourceSection(), statements.toArray(new MeatNode[0])));
+		return push(1, new ListNode(language, null, newSourceSection(), statements.toArray(new MeatNode[0])));
 	}
 
 	Rule DictionaryLiteral() {
@@ -199,7 +202,7 @@ public class Parser extends BaseParser<Object> {
 	}
 
 	boolean newDictionaryLiteral(List<Pair<MeatNode, MeatNode>> entries) {
-		return push(1, new DictionaryNode(newSourceSection(), entries.toArray(new Pair[0])));
+		return push(1, new DictionaryNode(language, null, newSourceSection(), entries.toArray(new Pair[0])));
 	}
 
 	Rule DictionaryLiteralEntry() {
@@ -215,7 +218,7 @@ public class Parser extends BaseParser<Object> {
 	}
 
 	boolean newVariableLiteral(String name) {
-		return push(1, new VariableNode(newSourceSection(), name));
+		return push(1, new VariableNode(language, null, newSourceSection(), name));
 	}
 
 	Rule BlockLiteral() {
@@ -227,7 +230,7 @@ public class Parser extends BaseParser<Object> {
 	}
 
 	boolean newBlockLiteral(List<String> parameters, List<MeatNode> statements) {
-		return push(1, new BlockNode(newSourceSection(), parameters.toArray(new String[0]),
+		return push(1, new BlockNode(language, null, newSourceSection(), parameters.toArray(new String[0]),
 				statements.toArray(new MeatNode[0])));
 	}
 

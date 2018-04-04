@@ -5,6 +5,8 @@ import java.util.Map;
 
 public class MeatContext extends MeatDictionary {
 
+	public static final String FRAME_SLOT = "context";
+
 	public MeatContext(Map<Object, MeatObject> values) {
 		super(values);
 		this.values.put("context", new MeatVariable(this));
