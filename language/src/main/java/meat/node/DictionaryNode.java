@@ -26,11 +26,10 @@ public class DictionaryNode extends MeatNode {
 
 	@Override
 	public MeatObject execute(VirtualFrame frame, MeatObject context, MeatObject[] arguments) {
-		Map<Object, MeatObject> values = new HashMap<>();
+		Map<MeatObject, MeatObject> values = new HashMap<>();
 		for (int i = 0; i < this.entries.length; i++) {
 			Pair<MeatNode, MeatNode> entry = this.entries[i];
-			// FIXME should this really be the value?
-			Object key = entry.getLeft().execute(frame, context, arguments).value();
+			MeatObject key = entry.getLeft().execute(frame, context, arguments);
 			MeatObject value = entry.getRight().execute(frame, context, arguments);
 			values.put(key, value);
 		}

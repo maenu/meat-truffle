@@ -9,9 +9,9 @@ public class MeatContext extends MeatDictionary {
 
 	public static final String FRAME_SLOT = "context";
 
-	public MeatContext(Map<Object, MeatObject> values) {
+	public MeatContext(Map<MeatObject, MeatObject> values) {
 		super(values);
-		this.values.put("context", new MeatVariable(this));
+		this.values.put(new MeatString("context"), new MeatVariable(this));
 	}
 
 	@Override
@@ -23,7 +23,7 @@ public class MeatContext extends MeatDictionary {
 			if (!(value instanceof MeatVariable)) {
 				value = new MeatVariable(value);
 			}
-			this.values.put(key.value(), value);
+			this.values.put(key, value);
 			return value;
 		});
 		return oracle;

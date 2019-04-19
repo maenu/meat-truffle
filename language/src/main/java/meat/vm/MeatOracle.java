@@ -33,6 +33,10 @@ public class MeatOracle extends MeatBlock {
 			this.self.oracle = Optional.of(oracle);
 			return this.self;
 		});
+		this.methods.put("=", (arguments, context) -> {
+			MeatObject other = context.respondTo("at:", Utility.asList(new MeatNumber(new BigDecimal(1))), context);
+			return new MeatBoolean(this.self.equals(other));
+		});
 		this.methods.putAll(methods);
 	}
 
