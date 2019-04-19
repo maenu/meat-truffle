@@ -7,6 +7,8 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.stream.IntStream;
 
+import meat.Utility;
+
 public class MeatBlock extends MeatObject {
 
 	public static MeatBlock empty() {
@@ -37,14 +39,12 @@ public class MeatBlock extends MeatObject {
 			return this.getOracle();
 		});
 		this.methods.put("oracle:", (arguments, context) -> {
-			MeatObject oracle = context.respondTo("at:",
-					new MeatList(new MeatObject[] { new MeatNumber(new BigDecimal(1)) }), context);
+			MeatObject oracle = context.respondTo("at:", Utility.asList(new MeatNumber(new BigDecimal(1))), context);
 			this.oracle = Optional.of(oracle);
 			return this;
 		});
 		this.methods.put("=", (arguments, context) -> {
-			MeatObject other = context.respondTo("at:",
-					new MeatList(new MeatObject[] { new MeatNumber(new BigDecimal(1)) }), context);
+			MeatObject other = context.respondTo("at:", Utility.asList(new MeatNumber(new BigDecimal(1))), context);
 			return new MeatBoolean(this.equals(other));
 		});
 	}
@@ -61,9 +61,9 @@ public class MeatBlock extends MeatObject {
 		// adds arguments to context by name
 		IntStream.range(0, this.parameters.length).forEach(i -> {
 			String parameter = this.parameters[i];
-			MeatObject value = arguments.respondTo("at:",
-					new MeatList(new MeatObject[] { new MeatNumber(new BigDecimal(i + 1)) }), context);
-			context.respondTo("at:put:", new MeatList(new MeatObject[] { new MeatString(parameter), value }), context);
+			MeatObject value = arguments.respondTo("at:", Utility.asList(new MeatNumber(new BigDecimal(i + 1))),
+					context);
+			context.respondTo("at:put:", Utility.asList(new MeatString(parameter), value), context);
 		});
 		return this.function.apply(arguments, context);
 	}

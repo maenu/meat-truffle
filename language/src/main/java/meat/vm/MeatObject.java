@@ -5,6 +5,8 @@ import java.util.Optional;
 import com.oracle.truffle.api.interop.ForeignAccess;
 import com.oracle.truffle.api.interop.TruffleObject;
 
+import meat.Utility;
+
 public class MeatObject implements TruffleObject {
 
 	protected Optional<MeatObject> oracle;
@@ -31,8 +33,7 @@ public class MeatObject implements TruffleObject {
 
 	public MeatObject respondTo(String selector, MeatObject arguments, MeatObject context) {
 		// well... good luck
-		arguments = new MeatList(
-				new MeatObject[] { new MeatList(new MeatObject[] { new MeatString(selector), arguments }), context });
+		arguments = Utility.asList(Utility.asList(new MeatString(selector), arguments), context);
 		return this.getOracle().respondTo("evaluateWith:in:", arguments, context);
 	}
 

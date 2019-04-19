@@ -1,7 +1,5 @@
 package meat.node;
 
-import java.util.stream.Stream;
-
 import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.source.SourceSection;
@@ -29,9 +27,14 @@ public class MessageSendNode extends MeatNode {
 	@Override
 	public MeatObject execute(VirtualFrame frame, MeatObject context, MeatObject[] arguments) {
 		// FIXME new frame
-		MeatList arguments_ = new MeatList(
-				Stream.of(this.parameters).map(p -> p.execute(frame, context, arguments)).toArray(MeatObject[]::new));
-		return this.receiver.execute(frame, context, arguments).respondTo(this.selector, arguments_, context);
+		MeatObject[] arguments_ = new MeatObject[this.parameters.length];
+		for (int i = 0; i < this.parameters.length; i++) {
+			MeatNode parameter = this.parameters[i];
+			MeatObject argument = parameter.execute(frame, context, arguments);
+			arguments_[i] = argument;
+		}
+		return this.receiver.execute(frame, context, arguments).respondTo(this.selector, new MeatList(arguments_),
+				context);
 	}
 
 }

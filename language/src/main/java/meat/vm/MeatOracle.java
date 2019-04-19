@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
+import meat.Utility;
+
 public class MeatOracle extends MeatBlock {
 
 	private MeatObject self;
@@ -27,8 +29,7 @@ public class MeatOracle extends MeatBlock {
 			return this;
 		});
 		this.methods.put("oracle:", (arguments, context) -> {
-			MeatObject oracle = context.respondTo("at:",
-					new MeatList(new MeatObject[] { new MeatNumber(new BigDecimal(1)) }), context);
+			MeatObject oracle = context.respondTo("at:", Utility.asList(new MeatNumber(new BigDecimal(1))), context);
 			this.self.oracle = Optional.of(oracle);
 			return this.self;
 		});

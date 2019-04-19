@@ -1,7 +1,5 @@
 package meat.node;
 
-import java.util.stream.Stream;
-
 import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.source.SourceSection;
@@ -23,8 +21,11 @@ public class ListNode extends MeatNode {
 
 	@Override
 	public MeatObject execute(VirtualFrame frame, MeatObject context, MeatObject[] arguments) {
-		MeatObject[] values = Stream.of(this.statements).sequential().map(s -> s.execute(frame, context, arguments))
-				.toArray(MeatObject[]::new);
+		MeatObject[] values = new MeatObject[this.statements.length];
+		for (int i = 0; i < this.statements.length; i++) {
+			MeatNode statement = this.statements[i];
+			values[i] = statement.execute(frame, context, arguments);
+		}
 		return new MeatList(values);
 	}
 

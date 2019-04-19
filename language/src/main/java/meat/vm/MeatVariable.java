@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
+import meat.Utility;
+
 public class MeatVariable extends MeatObject {
 
 	private MeatObject object;
@@ -35,8 +37,7 @@ public class MeatVariable extends MeatObject {
 			return this.object;
 		});
 		methods.put("object:", (arguments, context) -> {
-			this.object = arguments.respondTo("at:",
-					new MeatList(new MeatObject[] { new MeatNumber(new BigDecimal(1)) }), context);
+			this.object = arguments.respondTo("at:", Utility.asList(new MeatNumber(new BigDecimal(1))), context);
 			return this;
 		});
 		return new MeatOracle(this, methods);

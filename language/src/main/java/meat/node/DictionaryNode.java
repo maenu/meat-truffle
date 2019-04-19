@@ -1,8 +1,7 @@
 package meat.node;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.graalvm.collections.Pair;
 
@@ -27,9 +26,14 @@ public class DictionaryNode extends MeatNode {
 
 	@Override
 	public MeatObject execute(VirtualFrame frame, MeatObject context, MeatObject[] arguments) {
-		Map<Object, MeatObject> values = Stream.of(this.entries).sequential()
-				.collect(Collectors.toMap(p -> p.getLeft().execute(frame, context, arguments).value(),
-						p -> p.getRight().execute(frame, context, arguments)));
+		Map<Object, MeatObject> values = new HashMap<>();
+		for (int i = 0; i < this.entries.length; i++) {
+			Pair<MeatNode, MeatNode> entry = this.entries[i];
+			// FIXME should this really be the value?
+			Object key = entry.getLeft().execute(frame, context, arguments).value();
+			MeatObject value = entry.getRight().execute(frame, context, arguments);
+			values.put(key, value);
+		}
 		return new MeatDictionary(values);
 	}
 
